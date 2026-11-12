@@ -33,7 +33,7 @@ Reply ONLY with JSON:
 x,y = percent position in the photo where the item would go. The sum of max_price must be <= budget.
 For an outfit, suggest wearable items and accessories; for a party, decorations and tableware; otherwise decor and gear that fits that space.`;
 
-export async function planStyle(image: string, canvas: string, vibe: string, budget: number, retried = false): Promise<StylePlan> {
+export async function planStyle(image: string, canvas: string, vibe: string, budget: number, note = "", retried = false): Promise<StylePlan> {
   const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
     method: "POST",
     headers: { Authorization: `Bearer ${process.env.GROQ_API_KEY}`, "Content-Type": "application/json" },
@@ -47,7 +47,7 @@ export async function planStyle(image: string, canvas: string, vibe: string, bud
         {
           role: "user",
           content: [
-            { type: "text", text: `canvas: ${canvas}. vibe: ${vibe}. budget: $${budget}` },
+            { type: "text", text: `canvas: ${canvas}. vibe: ${vibe}. budget: $${budget}${note}` },
             { type: "image_url", image_url: { url: image } },
           ],
         },
@@ -58,7 +58,7 @@ export async function planStyle(image: string, canvas: string, vibe: string, bud
   const wait = Number(res.headers.get("retry-after"));
   if (res.status === 429 && !retried && wait <= 20) {
     await new Promise((r) => setTimeout(r, (wait || 5) * 1000));
-    return planStyle(image, canvas, vibe, budget, true);
+    return planStyle(image, canvas, vibe, budget, note, true);
   }
   if (res.status === 429) throw new Error("the stylist is swamped rn 😵‍💫 try again in a minute");
   const data = await res.json();
@@ -132,11 +132,13 @@ export async function toItem(p: C3Product, pick: Pick, withSticker = true): Prom
   };
 }
 
+export class SoldOut extends Error {}
+
 /** Re-reads the live price from Channel3 so the client can never set its own prices. */
 export async function livePrice(productId: string) {
   const p: C3Product = await c3(`/v1/products/${encodeURIComponent(productId)}`);
   const offer = cheapestOffer(p);
-  if (!offer) throw new Error(`${p.title} is out of stock`);
+  if (!offer) throw new SoldOut(`${p.title} is out of stock`);
   return { title: p.title, price: offer.price.price };
 }
 
@@ -154,11 +156,11 @@ async function paypalToken() {
   return data.access_token as string;
 }
 
-export async function paypal(path: string, body: object) {
+export async function paypal(path: string, body?: object) {
   const res = await fetch(PAYPAL + path, {
-    method: "POST",
+    method: body ? "POST" : "GET",
     headers: { Authorization: `Bearer ${await paypalToken()}`, "Content-Type": "application/json" },
-    body: JSON.stringify(body),
+    body: body && JSON.stringify(body),
   });
   const data = await res.json();
   if (!res.ok) throw new Error(data.details?.[0]?.description ?? data.message ?? "paypal request failed");

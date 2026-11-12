@@ -4,13 +4,17 @@ export const maxDuration = 60;
 
 // Photo + vibe + budget -> AI plan -> real products (with stickers) + swap alternates per slot.
 export async function POST(req: Request) {
-  const { image, canvas, vibe, budget } = await req.json();
+  const { image, canvas, vibe, budget, feedback, previous } = await req.json();
   if (typeof image !== "string" || !image.startsWith("data:image/") || image.length > 4_000_000)
     return Response.json({ error: "please upload a photo under 3MB" }, { status: 400 });
   const cap = Math.min(Math.max(Number(budget) || 100, 20), 2000);
 
   try {
-    const plan = await planStyle(image, String(canvas).slice(0, 20), String(vibe).slice(0, 60), cap);
+    // chat refine: "cheaper", "more pink", "swap the rug" -> re-plan with the previous picks as context
+    const note = feedback
+      ? `. previous picks: ${String(previous ?? "").slice(0, 400)}. the user says: "${String(feedback).slice(0, 200)}". adjust the picks accordingly and mention the change in your message.`
+      : "";
+    const plan = await planStyle(image, String(canvas).slice(0, 20), String(vibe).slice(0, 60), cap, note);
     const slots = await Promise.all(
       plan.items.slice(0, 6).map(async (pick) => {
         const found = await searchProducts(pick.query, Math.max(pick.max_price, 5)).catch(() => []);

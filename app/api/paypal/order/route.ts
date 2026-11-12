@@ -19,8 +19,9 @@ export async function POST(req: Request) {
             value: total,
             breakdown: { item_total: { currency_code: "USD", value: total } },
           },
-          items: lines.map((l) => ({
+          items: lines.map((l, i) => ({
             name: l.title.slice(0, 127),
+            sku: String(ids[i]), // Channel3 product id, so the agent can re-check stock after payment
             quantity: "1",
             category: "PHYSICAL_GOODS",
             unit_amount: { currency_code: "USD", value: l.price.toFixed(2) },
