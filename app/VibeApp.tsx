@@ -68,15 +68,15 @@ declare global {
   }
 }
 
+let paypalLoading: Promise<void> | null = null; // load the SDK once; a second copy kills the first's buttons
 function loadPaypal(clientId: string) {
-  if (window.paypal) return Promise.resolve();
-  return new Promise<void>((resolve, reject) => {
+  return (paypalLoading ??= new Promise<void>((resolve, reject) => {
     const s = document.createElement("script");
     s.src = `https://www.paypal.com/sdk/js?client-id=${encodeURIComponent(clientId)}&currency=USD&intent=capture`;
     s.onload = () => resolve();
     s.onerror = () => reject(new Error("couldn't load PayPal"));
     document.body.appendChild(s);
-  });
+  }));
 }
 
 export default function VibeApp({ paypalClientId }: { paypalClientId: string }) {
