@@ -63,9 +63,9 @@ h2 { font-size: 32px; line-height: 1.05; letter-spacing: -0.5px; }
 :focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
 
 /* snap */
-.chips { display: flex; gap: 8px; }
+.chips { display: flex; gap: 8px; overflow-x: auto; margin: 0 -16px; padding: 2px 16px 6px; scrollbar-width: none; }
 .chip {
-  flex: 1; border: 2px solid var(--ink); border-radius: 14px; padding: 10px 4px; font-size: 15px;
+  flex: none; white-space: nowrap; padding-inline: 14px !important; border: 2px solid var(--ink); border-radius: 14px; padding: 10px 4px; font-size: 15px;
   background: var(--card); cursor: pointer; min-height: 44px; transition: transform 0.15s;
 }
 .chip.on { background: var(--mint); box-shadow: 3px 3px 0 var(--ink); transform: rotate(-2deg); }

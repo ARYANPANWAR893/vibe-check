@@ -11,6 +11,11 @@ const CANVASES = [
   { id: "room", label: "🛋️ room" },
   { id: "outfit", label: "👗 fit" },
   { id: "desk", label: "💻 desk" },
+  { id: "kitchen", label: "🍳 kitchen" },
+  { id: "bathroom", label: "🛁 bathroom" },
+  { id: "dorm", label: "🎓 dorm" },
+  { id: "balcony", label: "🪴 balcony" },
+  { id: "party", label: "🎉 party" },
 ];
 
 const VIBES: Vibe[] = [
@@ -33,6 +38,9 @@ const SAMPLES: Record<string, string> = {
   room: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=1024&q=80",
   outfit: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=1024&q=80",
   desk: "https://images.unsplash.com/photo-1593062096033-9a26b09da705?w=1024&q=80",
+  kitchen: "https://images.unsplash.com/photo-1556911220-bff31c812dba?w=1024&q=80",
+  bathroom: "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=1024&q=80",
+  dorm: "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=1024&q=80",
 };
 
 const LOADING_LINES = [
@@ -220,7 +228,7 @@ export default function VibeApp({ paypalClientId }: { paypalClientId: string }) 
             )}
             <input className="sr" type="file" accept="image/*" capture="environment" onChange={(e) => e.target.files?.[0] && pickPhoto(e.target.files[0])} />
           </label>
-          {!photo && (
+          {!photo && SAMPLES[canvas] && (
             <div className="samples">
               <span className="muted">no photo handy?</span>
               <button onClick={() => pickPhoto(SAMPLES[canvas])}>use a sample {canvas}</button>

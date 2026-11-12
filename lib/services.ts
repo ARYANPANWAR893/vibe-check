@@ -31,15 +31,15 @@ Reply ONLY with JSON:
  "items":[{"query":"specific product search query, 3-6 words","name":"short cute name, lowercase",
    "why":"why it fits, max 12 words","max_price":number,"x":0-100,"y":0-100}]}
 x,y = percent position in the photo where the item would go. The sum of max_price must be <= budget.
-For an outfit, suggest wearable items and accessories; for a desk, desk gear and decor.`;
+For an outfit, suggest wearable items and accessories; for a party, decorations and tableware; otherwise decor and gear that fits that space.`;
 
-export async function planStyle(image: string, canvas: string, vibe: string, budget: number): Promise<StylePlan> {
+export async function planStyle(image: string, canvas: string, vibe: string, budget: number, retried = false): Promise<StylePlan> {
   const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
     method: "POST",
     headers: { Authorization: `Bearer ${process.env.GROQ_API_KEY}`, "Content-Type": "application/json" },
     body: JSON.stringify({
       model: process.env.GROQ_MODEL ?? "qwen/qwen3.8-27b",
-      max_tokens: 1500,
+      max_tokens: 800, // reserved against Groq's per-minute token limit, so keep it tight (replies are ~500)
       reasoning_effort: "none",
       response_format: { type: "json_object" },
       messages: [
@@ -54,6 +54,13 @@ export async function planStyle(image: string, canvas: string, vibe: string, bud
       ],
     }),
   });
+  // free tier is 8K tokens/min: when busy, wait it out once (up to 20s) instead of failing
+  const wait = Number(res.headers.get("retry-after"));
+  if (res.status === 429 && !retried && wait <= 20) {
+    await new Promise((r) => setTimeout(r, (wait || 5) * 1000));
+    return planStyle(image, canvas, vibe, budget, true);
+  }
+  if (res.status === 429) throw new Error("the stylist is swamped rn 😵‍💫 try again in a minute");
   const data = await res.json();
   const choice = data.choices?.[0];
   if (!res.ok || !choice) throw new Error(data.error?.message ?? "stylist failed");
