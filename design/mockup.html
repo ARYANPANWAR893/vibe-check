@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vibe Check — UI Mockup</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1b1235; --paper:#fff8ef; --card:#ffffff;
+  --pink:#ff7eb6; --lemon:#ffe066; --mint:#7ee8c7; --sky:#8ecbff; --lilac:#c3a6ff; --peach:#ffb38a;
+  --vibe:var(--pink);            /* recolors per chosen vibe */
+  --border:3px solid var(--ink); --shadow:5px 5px 0 var(--ink); --r:22px;
+}
+*{box-sizing:border-box;margin:0}
+body{font-family:'DM Sans',sans-serif;color:var(--ink);background:
+  radial-gradient(circle at 10% 10%,#ffd6e8 0 120px,transparent 121px),
+  radial-gradient(circle at 90% 30%,#d9f7ec 0 160px,transparent 161px),
+  radial-gradient(circle at 30% 90%,#fff1b8 0 140px,transparent 141px),var(--paper);
+  min-height:100vh;padding:32px 16px}
+h1,h2,h3,.btn,.chip{font-family:'Fredoka',sans-serif}
+.wrap{display:flex;gap:28px;flex-wrap:wrap;justify-content:center}
+.label{text-align:center;font:600 14px Fredoka;margin-bottom:10px;opacity:.7}
+.phone{width:340px;height:700px;background:var(--paper);border:var(--border);border-radius:36px;box-shadow:8px 8px 0 var(--ink);overflow:hidden;position:relative;padding:22px 18px;display:flex;flex-direction:column;gap:14px}
+.top{display:flex;justify-content:space-between;align-items:center}
+.logo{font:700 24px Fredoka;letter-spacing:-.5px}
+.logo span{background:var(--vibe);border:var(--border);border-radius:12px;padding:0 8px;display:inline-block;transform:rotate(-4deg)}
+.step{font:600 12px Fredoka;background:var(--card);border:2px solid var(--ink);border-radius:99px;padding:4px 10px}
+.btn{display:block;width:100%;min-height:54px;border:var(--border);border-radius:18px;box-shadow:var(--shadow);background:var(--vibe);font-size:19px;font-weight:600;cursor:pointer;transition:transform .12s,box-shadow .12s}
+.btn:active{transform:translate(4px,4px);box-shadow:1px 1px 0 var(--ink)}
+.btn.paypal{background:#ffc439}
+.card{background:var(--card);border:var(--border);border-radius:var(--r);box-shadow:var(--shadow)}
+.sticker{position:absolute;font-size:30px;filter:drop-shadow(2px 2px 0 var(--ink))}
+h2{font-size:30px;line-height:1.05;letter-spacing:-.5px}
+.muted{opacity:.7;font-size:14px}
+/* screen 1 */
+.drop{flex:1;display:grid;place-items:center;text-align:center;background:repeating-linear-gradient(45deg,#fff,#fff 12px,#fff3f9 12px,#fff3f9 24px);border:3px dashed var(--ink);border-radius:var(--r);padding:20px}
+.cam{width:84px;height:84px;border-radius:50%;background:var(--lemon);border:var(--border);display:grid;place-items:center;font-size:38px;margin:0 auto 10px;box-shadow:var(--shadow);animation:bob 2.4s ease-in-out infinite}
+.canv{display:flex;gap:8px}
+.chip{flex:1;text-align:center;border:2px solid var(--ink);border-radius:14px;padding:8px 4px;font-size:14px;background:var(--card);cursor:pointer}
+.chip.on{background:var(--mint);box-shadow:3px 3px 0 var(--ink)}
+/* screen 2 */
+.vibes{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.vibe{border:var(--border);border-radius:18px;padding:14px 12px;min-height:96px;box-shadow:4px 4px 0 var(--ink);cursor:pointer;position:relative}
+.vibe b{font:600 17px Fredoka;display:block;margin-top:6px}
+.vibe i{font-style:normal;font-size:26px}
+.vibe.sel{transform:rotate(-2deg) scale(1.03);outline:3px solid var(--ink);outline-offset:3px}
+.slider{padding:14px}
+.track{height:14px;border:2px solid var(--ink);border-radius:99px;background:linear-gradient(90deg,var(--mint),var(--lemon),var(--pink));position:relative;margin:14px 0 8px}
+.knob{position:absolute;left:42%;top:50%;width:30px;height:30px;transform:translate(-50%,-50%);border-radius:50%;background:#fff;border:var(--border);box-shadow:2px 2px 0 var(--ink)}
+.ends{display:flex;justify-content:space-between;font-size:12px}
+/* screen 3 */
+.scene{height:300px;border:var(--border);border-radius:var(--r);background:linear-gradient(160deg,#e9dcc9,#cbb59a);position:relative;overflow:hidden;box-shadow:var(--shadow)}
+.scene .pchip{position:absolute;background:#fff;border:2px solid var(--ink);border-radius:14px;padding:6px;display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700;box-shadow:3px 3px 0 var(--ink);animation:pop .5s cubic-bezier(.3,1.6,.5,1) both}
+.pchip .im{width:38px;height:38px;border-radius:10px;border:2px solid var(--ink);display:grid;place-items:center;font-size:22px}
+.tag{position:absolute;top:10px;left:10px;background:var(--vibe);border:2px solid var(--ink);border-radius:99px;padding:4px 10px;font:600 13px Fredoka}
+.ai{display:flex;gap:10px;align-items:flex-start;padding:12px;font-size:14px}
+.ai .av{flex:none;width:36px;height:36px;border-radius:50%;background:var(--lilac);border:2px solid var(--ink);display:grid;place-items:center}
+/* screen 4 */
+.stack{position:relative;height:360px}
+.swipe{position:absolute;inset:0;padding:14px;display:flex;flex-direction:column;gap:10px}
+.swipe:nth-child(1){transform:rotate(5deg) translateY(10px);background:var(--sky)}
+.swipe:nth-child(2){transform:rotate(-3deg) translateY(4px);background:var(--lemon)}
+.swipe .pic{flex:1;border:var(--border);border-radius:16px;background:#fff6e0;display:grid;place-items:center;font-size:90px}
+.price{display:flex;justify-content:space-between;align-items:center}
+.price b{font:700 22px Fredoka}
+.why{font-size:13px;background:#fff;border:2px solid var(--ink);border-radius:12px;padding:8px}
+.acts{display:flex;justify-content:center;gap:26px}
+.round{width:66px;height:66px;border-radius:50%;border:var(--border);box-shadow:var(--shadow);display:grid;place-items:center;font-size:28px;cursor:pointer}
+/* screen 5 */
+.row{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:2px dashed #0002}
+.row:last-child{border:0}
+.row .im{width:42px;height:42px;border-radius:12px;border:2px solid var(--ink);display:grid;place-items:center;font-size:22px;background:#fff6e0}
+.row span{flex:1;font-size:14px;font-weight:500}
+.total{display:flex;justify-content:space-between;font:700 20px Fredoka;padding:12px}
+.meter{height:12px;border:2px solid var(--ink);border-radius:99px;overflow:hidden;background:#fff}
+.meter div{height:100%;width:71%;background:var(--mint)}
+/* screen 6 */
+.share{flex:1;background:var(--vibe);padding:16px;display:flex;flex-direction:column;gap:10px;transform:rotate(-1.5deg)}
+.ba{display:flex;gap:8px;flex:1}
+.ba div{flex:1;border:var(--border);border-radius:14px;display:grid;place-items:end center;padding-bottom:8px;font:600 13px Fredoka}
+.confetti{position:absolute;width:10px;height:16px;border:2px solid var(--ink);border-radius:3px;animation:fall 3s linear infinite}
+@keyframes bob{50%{transform:translateY(-6px) rotate(-6deg)}}
+@keyframes pop{from{transform:scale(0) rotate(-20deg)}}
+@keyframes fall{from{transform:translateY(-40px) rotate(0)}to{transform:translateY(720px) rotate(540deg)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div><p class="label">1 · Snap</p>
+<div class="phone">
+  <div class="top"><div class="logo">vibe <span>check</span></div><div class="step">1 / 4</div></div>
+  <h2>show us your<br>space ✨</h2>
+  <div class="canv"><div class="chip on">🛋️ room</div><div class="chip">👗 fit</div><div class="chip">💻 desk</div></div>
+  <label class="drop"><div><div class="cam">📸</div><b style="font:600 18px Fredoka">snap or upload</b><p class="muted">a messy room is totally fine lol</p></div><input type="file" accept="image/*" capture="environment" hidden></label>
+  <button class="btn">next →</button>
+  <span class="sticker" style="top:96px;right:22px;transform:rotate(14deg)">🌸</span>
+</div></div>
+
+<div><p class="label">2 · Pick a vibe</p>
+<div class="phone">
+  <div class="top"><div class="logo">vibe <span>check</span></div><div class="step">2 / 4</div></div>
+  <h2>what's the vibe?</h2>
+  <div class="vibes">
+    <div class="vibe sel" style="background:var(--mint)"><i>🌿</i><b>cottagecore</b></div>
+    <div class="vibe" style="background:var(--sky)"><i>💿</i><b>y2k</b></div>
+    <div class="vibe" style="background:#fff"><i>🤍</i><b>clean girl</b></div>
+    <div class="vibe" style="background:var(--peach)"><i>📚</i><b>dark academia</b></div>
+    <div class="vibe" style="background:var(--lemon)"><i>🐚</i><b>coastal</b></div>
+    <div class="vibe" style="background:var(--lilac)"><i>💜</i><b>cyber</b></div>
+  </div>
+  <div class="card slider"><b style="font:600 16px Fredoka">budget: $150</b>
+    <div class="track"><div class="knob"></div></div>
+    <div class="ends"><span>broke student 🥲</span><span>treat yourself 💸</span></div></div>
+  <button class="btn" style="--vibe:var(--mint)">vibe it up ✨</button>
+</div></div>
+
+<div><p class="label">3 · AI restyle (stickers on your photo)</p>
+<div class="phone" style="--vibe:var(--mint)">
+  <div class="top"><div class="logo">vibe <span>check</span></div><div class="step">3 / 4</div></div>
+  <div class="scene"><div class="tag">🌿 cottagecore</div>
+    <div class="pchip" style="top:60px;left:16px;animation-delay:.1s"><div class="im" style="background:#e6f7d9">🪴</div>$24</div>
+    <div class="pchip" style="top:120px;right:14px;animation-delay:.3s"><div class="im" style="background:#fff0d6">🕯️</div>$12</div>
+    <div class="pchip" style="bottom:70px;left:40px;animation-delay:.5s"><div class="im" style="background:#ffe3ec">🧺</div>$38</div>
+    <div class="pchip" style="bottom:18px;right:30px;animation-delay:.7s"><div class="im" style="background:#e3f0ff">🛏️</div>$45</div>
+  </div>
+  <div class="card ai"><div class="av">🤖</div><p><b>your stylist:</b> warm linen + plants + soft candlelight. 6 picks, <b>$142</b> total, $8 under budget 💅</p></div>
+  <button class="btn">swipe the picks →</button>
+</div></div>
+
+<div><p class="label">4 · Swipe keep / skip</p>
+<div class="phone" style="--vibe:var(--mint)">
+  <div class="top"><div class="logo">vibe <span>check</span></div><div class="step">4 / 4</div></div>
+  <div class="stack">
+    <div class="card swipe"></div><div class="card swipe"></div>
+    <div class="card swipe" style="background:#fff">
+      <div class="pic">🪴</div>
+      <div class="price"><div><b style="font:600 17px Fredoka">trailing pothos + pot</b><p class="muted">from Etsy · in stock</p></div><b>$24</b></div>
+      <div class="why">🌿 why: brings the "garden indoors" feel, fits your windowsill</div>
+    </div>
+  </div>
+  <div class="acts"><div class="round" style="background:#fff">✖️</div><div class="round" style="background:var(--lemon)">🔄</div><div class="round" style="background:var(--pink)">💖</div></div>
+  <p class="muted" style="text-align:center">✖️ skip · 🔄 swap for another · 💖 keep</p>
+</div></div>
+
+<div><p class="label">5 · One PayPal checkout</p>
+<div class="phone" style="--vibe:var(--mint)">
+  <div class="top"><div class="logo">vibe <span>check</span></div><div class="step">bag 🛍️</div></div>
+  <h2>your cottagecore kit</h2>
+  <div class="card">
+    <div class="row"><div class="im">🪴</div><span>trailing pothos</span><b>$24</b></div>
+    <div class="row"><div class="im">🕯️</div><span>beeswax candles ×3</span><b>$12</b></div>
+    <div class="row"><div class="im">🧺</div><span>woven basket</span><b>$38</b></div>
+    <div class="row"><div class="im">🛏️</div><span>linen throw</span><b>$45</b></div>
+    <div class="total"><span>total</span><span>$119</span></div>
+  </div>
+  <div><div class="meter"><div></div></div><p class="muted" style="margin-top:6px">$31 left in budget 🎉</p></div>
+  <button class="btn paypal" style="margin-top:auto">pay with PayPal</button>
+  <p class="muted" style="text-align:center;font-size:12px">one tap, every item. your stylist handles the rest 🤖</p>
+</div></div>
+
+<div><p class="label">6 · Share card + confetti</p>
+<div class="phone" style="--vibe:var(--mint)">
+  <span class="confetti" style="left:30px;background:var(--pink)"></span>
+  <span class="confetti" style="left:120px;background:var(--lemon);animation-delay:.8s"></span>
+  <span class="confetti" style="left:220px;background:var(--sky);animation-delay:1.6s"></span>
+  <span class="confetti" style="left:290px;background:var(--lilac);animation-delay:.4s"></span>
+  <h2>vibe secured! 🎉</h2>
+  <div class="card share">
+    <b style="font:700 22px Fredoka">my room went<br>cottagecore 🌿</b>
+    <div class="ba"><div style="background:#d8cfc4">before</div><div style="background:#e6f7d9">after ✨</div></div>
+    <p style="font:600 15px Fredoka">4 items · $119 · via vibe check</p>
+  </div>
+  <button class="btn" style="background:var(--lemon)">share my vibe 📤</button>
+  <button class="btn" style="background:#fff">vibe check something else</button>
+</div></div>
+
+</div>
+</body>
+</html>
