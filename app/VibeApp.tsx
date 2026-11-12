@@ -20,6 +20,12 @@ const VIBES: Vibe[] = [
   { name: "dark academia", emoji: "📚", color: "#ffb38a" },
   { name: "coastal", emoji: "🐚", color: "#ffe066" },
   { name: "cyber", emoji: "💜", color: "#c3a6ff" },
+  { name: "barbiecore", emoji: "🎀", color: "#ff9fcf" },
+  { name: "japandi", emoji: "🍵", color: "#d9e8c4" },
+  { name: "boho", emoji: "🌻", color: "#ffcf7a" },
+  { name: "old money", emoji: "🐎", color: "#cfe3d4" },
+  { name: "kawaii", emoji: "🍓", color: "#ffc2d1" },
+  { name: "gamer cave", emoji: "🎮", color: "#9fa8ff" },
 ];
 
 // Sample photos so anyone (judges included) can try it without their own photo. Unsplash license.
@@ -92,6 +98,8 @@ export default function VibeApp({ paypalClientId }: { paypalClientId: string }) 
   const [error, setError] = useState("");
   const [line, setLine] = useState(0);
   const [paidBy, setPaidBy] = useState("");
+  const [after, setAfter] = useState(""); // "" none | "loading" | data URL
+  const [showAfter, setShowAfter] = useState(false);
 
   const vibeName = custom.trim() || vibe.name;
   const accent = custom.trim() ? "#ff7eb6" : vibe.color;
@@ -104,6 +112,8 @@ export default function VibeApp({ paypalClientId }: { paypalClientId: string }) 
     setKept([]);
     setIdx(0);
     setError("");
+    setAfter("");
+    setShowAfter(false);
   }
 
   async function pickPhoto(src: string | File) {
@@ -130,9 +140,28 @@ export default function VibeApp({ paypalClientId }: { paypalClientId: string }) 
       setKept([]);
       setIdx(0);
       setStep("restyle");
+      paintAfter(data.items);
     } catch (e) {
       setError((e as Error).message || "the stylist tripped, try again");
       setStep("vibe");
+    }
+  }
+
+  // AI "after" photo with the real products, generated in the background (optional: needs GEMINI_API_KEY)
+  async function paintAfter(items: Item[]) {
+    setAfter("loading");
+    setShowAfter(false);
+    try {
+      const res = await fetch("/api/after", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ image: photo, vibe: vibeName, canvas, items: items.map((i) => ({ name: i.title, url: i.sticker })) }),
+      });
+      const data = await res.json();
+      setAfter(res.ok ? data.image : "");
+      if (res.ok) setShowAfter(true);
+    } catch {
+      setAfter("");
     }
   }
 
@@ -264,8 +293,26 @@ export default function VibeApp({ paypalClientId }: { paypalClientId: string }) 
 
       {step === "restyle" && result && (
         <section className="screen">
-          <Scene photo={photo} items={result.items} tag={`${custom ? "✨" : vibe.emoji} ${vibeName}`} onMove={moveSticker} />
-          <p className="muted center">psst, drag the stickers around 👆</p>
+          {after && (
+            <div className="toggle" role="tablist" aria-label="before or after">
+              <button role="tab" aria-selected={!showAfter} className={!showAfter ? "on" : ""} onClick={() => setShowAfter(false)}>before + stickers</button>
+              <button role="tab" aria-selected={showAfter} className={showAfter ? "on" : ""} disabled={after === "loading"} onClick={() => setShowAfter(true)}>
+                {after === "loading" ? "painting after… 🎨" : "after ✨"}
+              </button>
+            </div>
+          )}
+          {showAfter && after.startsWith("data:") ? (
+            <div className="scene reveal">
+              <div className="tag">✨ AI after</div>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={after} alt={`your ${canvas} restyled as ${vibeName}`} />
+            </div>
+          ) : (
+            <>
+              <Scene photo={photo} items={result.items} tag={`${custom ? "✨" : vibe.emoji} ${vibeName}`} onMove={moveSticker} />
+              <p className="muted center">psst, drag the stickers around 👆</p>
+            </>
+          )}
           <div className="card ai">
             <div className="av">🤖</div>
             <p>
@@ -309,16 +356,25 @@ export default function VibeApp({ paypalClientId }: { paypalClientId: string }) 
           {paidBy && <p className="muted">thanks {paidBy}! paid with PayPal, your stylist is placing the orders now 🤖</p>}
           <div className="card share">
             <b className="display" style={{ fontSize: 23 }}>my {canvas} went<br />{vibeName} {custom ? "✨" : vibe.emoji}</b>
-            <div className="collage">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={photo} alt="" />
-              {kept.map((it) => (
-                <div key={it.id} className="stk" style={{ left: `${it.x}%`, top: `${it.y}%`, width: "22%" }}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={it.sticker} alt={it.name} />
-                </div>
-              ))}
-            </div>
+            {after.startsWith("data:") ? (
+              <div className="ba">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <figure><img src={photo} alt="before" /><figcaption>before</figcaption></figure>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <figure><img src={after} alt="after" /><figcaption>after ✨</figcaption></figure>
+              </div>
+            ) : (
+              <div className="collage">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={photo} alt="" />
+                {kept.map((it) => (
+                  <div key={it.id} className="stk" style={{ left: `${it.x}%`, top: `${it.y}%`, width: "22%" }}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={it.sticker} alt={it.name} />
+                  </div>
+                ))}
+              </div>
+            )}
             <p className="display" style={{ fontWeight: 600 }}>{kept.length} items · {money(total)} · via vibe check</p>
           </div>
           <button
